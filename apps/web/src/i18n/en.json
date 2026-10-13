@@ -1,0 +1,13 @@
+{
+  "tagline": "The CRM platform built for India",
+  "login": { "title": "Sign in to your workspace", "email": "Work email", "password": "Password", "workspace": "Workspace (optional)", "submit": "Sign in", "noAccount": "New to G3Leads?", "create": "Create a workspace" },
+  "signup": { "title": "Create your workspace", "orgName": "Company name", "slug": "Workspace URL", "name": "Your name", "submit": "Create workspace", "haveAccount": "Already have an account?" },
+  "invite": { "title": "Join your team", "submit": "Join workspace" },
+  "nav": { "admin": "Admin console", "team": "Team", "my-workspace": "My workspace", "inbox": "Inbox", "invoicing": "Invoicing", "logout": "Sign out" },
+  "admin": { "title": "Admin console", "users": "Users", "roles": "Roles", "pendingInvites": "Pending invites", "invite": "Invite teammate", "inviteLink": "Share this invite link", "newRole": "New role", "recent": "Recent activity", "create": "Create role" },
+  "team": { "title": "Team pipeline", "contacts": "Team contacts", "byOwner": "Contacts by owner" },
+  "workspace": { "title": "My workspace", "myContacts": "My contacts", "add": "Add contact", "name": "Name", "phone": "Phone" },
+  "inbox": { "title": "Inbox", "soon": "WhatsApp, email and SMS conversations arrive in Phase 3." },
+  "invoicing": { "title": "Invoicing", "soon": "GST invoices and payment links arrive in Phase 3." },
+  "forbidden": "You don't have access to this page."
+}

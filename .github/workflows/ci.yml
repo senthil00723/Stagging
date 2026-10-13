@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: g3leads
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 10
+    env:
+      MIGRATION_DATABASE_URL: postgres://postgres:postgres@localhost:5432/g3leads
+      DATABASE_URL: postgres://g3_app:g3_app_dev@localhost:5432/g3leads
+      PLATFORM_DATABASE_URL: postgres://g3_platform:g3_platform_dev@localhost:5432/g3leads
+      TENANT_JWT_SECRET: ci-tenant-secret-0123456789abcdef0123456789
+      ADMIN_JWT_SECRET: ci-admin-secret-0123456789abcdef01234567890
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - name: Create test database
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -c 'create database g3leads_test'
+      - name: API integration tests (RLS, portal separation, RBAC)
+        run: pnpm test
+      - run: pnpm build
+      - name: Migrate + seed dev database
+        run: pnpm db:migrate && pnpm db:seed
+      - name: Install Playwright Chromium
+        run: pnpm --filter @g3/e2e exec playwright install --with-deps chromium
+      - name: E2E (Playwright)
+        run: mkdir -p docs/screenshots && pnpm --filter @g3/e2e e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screenshots
+          path: docs/screenshots
