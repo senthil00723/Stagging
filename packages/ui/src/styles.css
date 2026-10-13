@@ -61,3 +61,23 @@
 @utility border-line {
   border-color: var(--line);
 }
+
+/* Explicit theme choice from a host page (data-theme) wins over the OS setting. */
+@layer base {
+  :root[data-theme="light"] {
+    --surface: oklch(0.985 0.003 275);
+    --panel: oklch(1 0 0);
+    --ink: oklch(0.22 0.02 275);
+    --muted: oklch(0.52 0.02 275);
+    --line: oklch(0.91 0.01 275);
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --surface: oklch(0.17 0.015 275);
+    --panel: oklch(0.21 0.018 275);
+    --ink: oklch(0.95 0.01 275);
+    --muted: oklch(0.7 0.02 275);
+    --line: oklch(0.3 0.02 275);
+    color-scheme: dark;
+  }
+}

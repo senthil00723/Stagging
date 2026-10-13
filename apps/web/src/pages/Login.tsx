@@ -1,6 +1,7 @@
 import { Button, ErrorText, Field, Input } from "@g3/ui";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { DemoAccounts } from "../demo/DemoAccounts.tsx";
 import { AuthCard } from "./AuthCard.tsx";
 import { str, useAuthAction } from "./useAuthAction.ts";
 
@@ -38,6 +39,7 @@ export function LoginPage() {
           {t("login.submit")}
         </Button>
       </form>
+      {import.meta.env.VITE_DEMO === "1" && <DemoAccounts />}
     </AuthCard>
   );
 }

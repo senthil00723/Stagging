@@ -4,7 +4,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Copy } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import { api } from "../lib/api.ts";
+import { useAuth } from "../lib/auth.ts";
 import { PageHeader, Table } from "./PageHeader.tsx";
 
 interface Role {
@@ -128,11 +130,15 @@ export function AdminPage() {
 function InviteCard({ roles }: { roles: Role[] }) {
   const { t } = useTranslation();
   const qc = useQueryClient();
+  const navigate = useNavigate();
+  const logout = useAuth((s) => s.logout);
   const [link, setLink] = useState<string | null>(null);
+  const [invitePath, setInvitePath] = useState<string | null>(null);
   const invite = useMutation({
     mutationFn: (body: { email: string; roleId: string }) =>
       api<{ invitePath: string }>("/invitations", { method: "POST", body }),
     onSuccess: (r) => {
+      setInvitePath(r.invitePath);
       setLink(window.location.origin + r.invitePath);
       void qc.invalidateQueries({ queryKey: ["dash", "admin"] });
     },
@@ -170,9 +176,25 @@ function InviteCard({ roles }: { roles: Role[] }) {
           <code className="break-all" data-testid="invite-link">
             {link}
           </code>
-          <Button variant="secondary" className="h-8" onClick={() => navigator.clipboard.writeText(link)}>
+          <Button
+            variant="secondary"
+            className="h-8"
+            onClick={() => navigator.clipboard?.writeText(link).catch(() => {})}
+          >
             <Copy className="size-3.5" /> Copy
           </Button>
+          {import.meta.env.VITE_DEMO === "1" && invitePath && (
+            <Button
+              variant="secondary"
+              className="h-8"
+              onClick={async () => {
+                await logout();
+                navigate(invitePath);
+              }}
+            >
+              Sign out and accept as the invitee
+            </Button>
+          )}
         </div>
       )}
     </Card>

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, createHashRouter, Navigate } from "react-router";
 import { AppShell, PublicOnly } from "./components/AppShell.tsx";
 import { RequireRole } from "./components/RequireRole.tsx";
 import { useAuth } from "./lib/auth.ts";
@@ -16,7 +16,10 @@ function Landing() {
   return <Navigate to={session?.role.landingRoute ?? "/login"} replace />;
 }
 
-export const router = createBrowserRouter([
+// The static demo is served from a single page, so it routes with the URL hash.
+const createRouter = import.meta.env.VITE_DEMO === "1" ? createHashRouter : createBrowserRouter;
+
+export const router = createRouter([
   {
     element: <PublicOnly />,
     children: [
